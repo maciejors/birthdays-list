@@ -1,9 +1,8 @@
-import { Text, View, SectionList } from 'react-native';
+import { getBirthdaysPerMonth } from '@/core/birthdays';
+import BirthdaySegmentedList from '@/components/BirthdaySegmentedList';
 
 export default function FullList() {
-	return (
-		<View>
-			<Text>Full list</Text>
-		</View>
-	);
+	const birthdaysPerMonth = getBirthdaysPerMonth();
+
+	return <BirthdaySegmentedList birthdaysGrouped={birthdaysPerMonth} />;
 }
