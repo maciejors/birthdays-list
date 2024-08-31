@@ -21,7 +21,8 @@ export interface BirthdayGroup {
 
 function getAllFutureBirthdays(): BirthdayAnniversary[] {
 	const datesOfBirth: DateOfBirth[] = [
-		{ name: 'Konstantyn', day: 30, month: 8, year: 1999 },
+		{ name: 'Konstantyn', day: 31, month: 8, year: 1999 },
+		{ name: 'Jerzy', day: 31, month: 8, year: 1998 },
 		{ name: 'Conor', day: 5, month: 9, year: 2000 },
 		{ name: 'Polska', day: 11, month: 11 },
 	];
