@@ -1,7 +1,7 @@
 import { startOfToday, isToday, isSameMonth, isSameDay, addDays, addMonths } from 'date-fns';
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
 
-interface DateOfBirth {
+export interface DateOfBirth {
 	name: string;
 	day: number;
 	month: number;
@@ -19,6 +19,26 @@ export interface BirthdayGroup {
 	birthdays: BirthdayAnniversary[];
 }
 
+export function addBirthday(dateOfBirth: DateOfBirth): void {}
+
+export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnniversary {
+	const today = startOfToday();
+	const thisYear = today.getFullYear();
+	const anniversaryDate = new Date(thisYear, dateOfBirth.month - 1, dateOfBirth.day);
+	// birthday is past so now it counts as upcomin in a year
+	if (anniversaryDate < today) {
+		anniversaryDate.setFullYear(thisYear + 1);
+	}
+	const birthdayAnniversary: BirthdayAnniversary = {
+		name: dateOfBirth.name,
+		date: anniversaryDate,
+	};
+	if (dateOfBirth.year !== undefined) {
+		birthdayAnniversary.age = today.getFullYear() - dateOfBirth.year;
+	}
+	return birthdayAnniversary;
+}
+
 function getAllFutureBirthdays(): BirthdayAnniversary[] {
 	const datesOfBirth: DateOfBirth[] = [
 		{ name: 'Konstantyn', day: 31, month: 8, year: 1999 },
@@ -26,23 +46,7 @@ function getAllFutureBirthdays(): BirthdayAnniversary[] {
 		{ name: 'Conor', day: 5, month: 9, year: 2000 },
 		{ name: 'Polska', day: 11, month: 11 },
 	];
-	const today = startOfToday();
-	const thisYear = today.getFullYear();
-	const result: BirthdayAnniversary[] = datesOfBirth.map((dateOfBirth) => {
-		const anniversaryDate = new Date(thisYear, dateOfBirth.month - 1, dateOfBirth.day);
-		// birthday is past so now it counts as upcomin in a year
-		if (anniversaryDate < today) {
-			anniversaryDate.setFullYear(thisYear + 1);
-		}
-		const birthdayAnniversary: BirthdayAnniversary = {
-			name: dateOfBirth.name,
-			date: anniversaryDate,
-		};
-		if (dateOfBirth.year !== undefined) {
-			birthdayAnniversary.age = today.getFullYear() - dateOfBirth.year;
-		}
-		return birthdayAnniversary;
-	});
+	const result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
 	return result;
 }
 

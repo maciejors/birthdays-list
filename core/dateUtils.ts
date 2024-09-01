@@ -1,5 +1,15 @@
 import { format, isToday, isTomorrow, isWithinInterval, addDays } from 'date-fns';
 import { enIE } from 'date-fns/locale';
+
+/**
+ * e.g. "January"
+ * @param monthNo a number from 1 to 12
+ */
+export function getMonthName(monthNo: number): string {
+	const dummyDate = new Date(2025, monthNo - 1);
+	return format(dummyDate, 'MMMM', { locale: enIE });
+}
+
 /**
  * e.g. "January 2025"
  */
