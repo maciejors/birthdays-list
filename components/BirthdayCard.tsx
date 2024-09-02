@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Dialog, Portal, Button, useTheme } from 'react-native-paper';
+import { Dialog, Portal, Button, useTheme, Text, Card } from 'react-native-paper';
 
 import type { BirthdayAnniversary } from '@/core/birthdays';
 import { formatDateMonth } from '@/core/dateUtils';
-import Colors from '@/values/Colors';
 
 type BirthdayCardProps = {
 	birthday: BirthdayAnniversary;
@@ -18,18 +17,11 @@ export default function BirthdayCard({
 	onDelete,
 	todayHighlight = false,
 }: BirthdayCardProps) {
+	const theme = useTheme();
+
 	const styles = StyleSheet.create({
 		card: {
-			backgroundColor: 'white',
-			borderRadius: 8,
 			padding: 8,
-			// Shadow properties for iOS
-			shadowColor: '#000',
-			shadowOffset: { width: 0, height: 2 },
-			shadowOpacity: 0.25,
-			shadowRadius: 3.84,
-			// Elevation for Android
-			elevation: 5,
 			margin: 4,
 		},
 		nameContainer: {
@@ -65,15 +57,15 @@ export default function BirthdayCard({
 	}
 
 	return (
-		<TouchableOpacity onPress={showDeleteDialog} disabled={!onDelete}>
-			<View style={styles.card}>
+		<>
+			<Card style={styles.card} onPress={showDeleteDialog} disabled={!onDelete}>
 				<View style={styles.nameContainer}>
 					<Text style={styles.nameText}>{birthday.name}</Text>
 					{todayHighlight && <MaterialIcons size={28} name="cake" color="black" />}
 				</View>
 				{!todayHighlight && <Text style={styles.dateText}>{formatDateMonth(birthday.date)}</Text>}
 				{birthday.age !== undefined && <Text style={styles.ageText}>{birthday.age} years old</Text>}
-			</View>
+			</Card>
 
 			<Portal>
 				<Dialog visible={isDeleteDialogVisible} onDismiss={hideDeleteDialog}>
@@ -82,15 +74,11 @@ export default function BirthdayCard({
 						<Text>Are you sure you want to delete {birthday.name}'s birthday?</Text>
 					</Dialog.Content>
 					<Dialog.Actions>
-						<Button onPress={hideDeleteDialog} textColor={Colors.primary}>
-							Cancel
-						</Button>
-						<Button onPress={handleDelete} textColor={Colors.primary}>
-							Yes
-						</Button>
+						<Button onPress={hideDeleteDialog}>Cancel</Button>
+						<Button onPress={handleDelete}>Yes</Button>
 					</Dialog.Actions>
 				</Dialog>
 			</Portal>
-		</TouchableOpacity>
+		</>
 	);
 }

@@ -1,11 +1,10 @@
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Keyboard } from 'react-native';
 import { useState } from 'react';
-import { Snackbar } from 'react-native-paper';
+import { Snackbar, Button } from 'react-native-paper';
 
 import StyledTextInput from '@/components/StyledTextInput';
 import MonthPicker from '@/components/MonthPicker';
 import { addBirthday, DateOfBirth } from '@/core/birthdays';
-import Colors from '@/values/Colors';
 
 const styles = StyleSheet.create({
 	rootContainer: {
@@ -15,17 +14,6 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontStyle: 'italic',
 		marginTop: 16,
-	},
-	dateInputContainer: {
-		flexDirection: 'row',
-		alignItems: 'center',
-	},
-	dateInputElement: {
-		flex: 1,
-	},
-	monthPicker: {
-		flex: 3,
-		zIndex: 10,
 	},
 	addButtonContainer: {
 		flexDirection: 'row',
@@ -72,6 +60,7 @@ export default function AddBirthday() {
 			missingFields.push('Month');
 		}
 		if (missingFields.length === 0) {
+			Keyboard.dismiss();
 			const dateOfBirth = getDateOfBirth();
 			await addBirthday(dateOfBirth.name, dateOfBirth.day, dateOfBirth.month, dateOfBirth.year);
 			setSnackbarText('Birthday added successfully!');
@@ -88,35 +77,27 @@ export default function AddBirthday() {
 	return (
 		<View style={styles.rootContainer}>
 			<StyledTextInput value={name} onChangeText={setName} placeholder="Name" />
-			<View style={styles.dateInputContainer}>
-				<StyledTextInput
-					style={styles.dateInputElement}
-					value={dayOfBirth}
-					onChangeText={setDayOfBirth}
-					placeholder="Day"
-					keyboardType="numeric"
-				/>
-				<View style={styles.monthPicker}>
-					<MonthPicker onChangeMonth={setMonthOfBirth} selectedMonth={monthOfBirth} />
-				</View>
-				<StyledTextInput
-					style={styles.dateInputElement}
-					value={yearOfBirth}
-					onChangeText={setYearOfBirth}
-					placeholder="Year"
-					keyboardType="numeric"
-				/>
-			</View>
-			{/* <PaddedText style={styles.previewTitle}>Previews:</PaddedText>
-			<BirthdayCard birthday={getBirthdayAnniversary(getDateOfBirth())} />
-			<BirthdayCard birthday={getBirthdayAnniversary(getDateOfBirth())} todayHighlight /> */}
+			<StyledTextInput
+				value={dayOfBirth}
+				onChangeText={setDayOfBirth}
+				placeholder="Day"
+				keyboardType="numeric"
+			/>
+			<MonthPicker onChangeMonth={setMonthOfBirth} selectedMonth={monthOfBirth} />
+			<StyledTextInput
+				value={yearOfBirth}
+				onChangeText={setYearOfBirth}
+				placeholder="Year"
+				keyboardType="numeric"
+			/>
 			<View style={styles.addButtonContainer}>
 				<Button
+					mode="contained"
 					onPress={handleAddBirthday}
-					title="Add birthday"
-					color={Colors.primary}
-					accessibilityLabel="Learn more about this purple button"
-				/>
+					accessibilityLabel="Add birthday button"
+				>
+					Add birthday
+				</Button>
 			</View>
 			<Snackbar
 				visible={snackbarText.length > 0}

@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import RNPickerSelect from 'react-native-picker-select';
-
+import { useState } from 'react';
+import { View, Pressable, Keyboard } from 'react-native';
+import { Menu } from 'react-native-paper';
 import { getMonthName } from '@/core/dateUtils';
+import StyledTextInput from './StyledTextInput';
 
 interface Month {
-	value: string; // from "1" to "12", plus "0" for not selected
-	label: string;
+	no: string; // from "1" to "12"
+	name: string;
 }
 
 const months: Month[] = [
 	...Array.from(Array(12).keys()).map((i) => ({
-		value: (i + 1).toString(),
-		label: getMonthName(i + 1),
+		no: (i + 1).toString(),
+		name: getMonthName(i + 1),
 	})),
 ];
-const placeholder = { value: null, label: 'Select a month' };
 
 type MonthPickerProps = {
 	onChangeMonth: (month: string | null) => void;
@@ -22,16 +22,41 @@ type MonthPickerProps = {
 };
 
 export default function MonthPicker({ onChangeMonth, selectedMonth }: MonthPickerProps) {
-	function onValueChange(itemValue: string | null) {
-		onChangeMonth(itemValue);
+	const [visible, setVisible] = useState(false);
+
+	function showMenu() {
+		setVisible(true);
+		Keyboard.dismiss();
 	}
+	const hideMenu = () => setVisible(false);
+
+	const handleSelectMonth = (value: string) => {
+		onChangeMonth(value === null ? null : value);
+		hideMenu();
+	};
+
+	const selectedMonthName = selectedMonth
+		? getMonthName(parseInt(selectedMonth))
+		: 'Select a month';
 
 	return (
-		<RNPickerSelect
-			onValueChange={onValueChange}
-			items={months}
-			placeholder={placeholder}
-			value={selectedMonth} // Controlled value
-		/>
+		<Menu
+			visible={visible}
+			onDismiss={hideMenu}
+			anchor={
+				<Pressable onPress={showMenu}>
+					<View pointerEvents="none">
+						<StyledTextInput
+							value={selectedMonthName}
+							editable={false} // Make it non-editable - it is there just for styling
+						/>
+					</View>
+				</Pressable>
+			}
+		>
+			{months.map((month) => (
+				<Menu.Item key={month.no} onPress={() => handleSelectMonth(month.no)} title={month.name} />
+			))}
+		</Menu>
 	);
 }

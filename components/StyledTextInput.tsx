@@ -1,26 +1,14 @@
-import { useState } from 'react';
-import { TextInput, StyleSheet, TextInputProps } from 'react-native';
-
-import Colors from '@/values/Colors';
+import { StyleSheet } from 'react-native';
+import { TextInput, TextInputProps } from 'react-native-paper';
 
 export default function StyledTextInput({ style, ...rest }: TextInputProps) {
-	const [active, setActive] = useState(false);
-
 	const styles = StyleSheet.create({
 		textInput: {
 			margin: 4,
 			padding: 4,
-			borderBottomWidth: 1,
-			borderBottomColor: active ? Colors.primary : 'lightgray',
+			backgroundColor: 'transparent',
 		},
 	});
 
-	return (
-		<TextInput
-			style={[styles.textInput, style]}
-			onFocus={() => setActive(true)}
-			onBlur={() => setActive(false)}
-			{...rest}
-		/>
-	);
+	return <TextInput style={[styles.textInput, style]} {...rest} />;
 }
