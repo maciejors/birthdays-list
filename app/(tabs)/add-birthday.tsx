@@ -51,6 +51,7 @@ export default function AddBirthday() {
 
 	function getDateOfBirth(): DateOfBirth {
 		const result: DateOfBirth = {
+			id: -1, // dummy ID
 			name: name.length > 0 ? name : 'Name',
 			day: parseIntDefault(dayOfBirth, 1),
 			month: parseIntDefault(monthOfBirth ?? '', 1),
@@ -61,7 +62,7 @@ export default function AddBirthday() {
 		return result;
 	}
 
-	function handleAddBirthday(): void {
+	async function handleAddBirthday(): Promise<void> {
 		const missingFields: string[] = [];
 		if (name.length === 0) {
 			missingFields.push('Name');
@@ -73,7 +74,8 @@ export default function AddBirthday() {
 			missingFields.push('Month');
 		}
 		if (missingFields.length === 0) {
-			addBirthday(getDateOfBirth());
+			const dateOfBirth = getDateOfBirth();
+			await addBirthday(dateOfBirth.name, dateOfBirth.day, dateOfBirth.month, dateOfBirth.year);
 			setSnackbarText('Birthday added successfully!');
 			// reset state
 			setName('');

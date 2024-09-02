@@ -1,7 +1,12 @@
 import { startOfToday, isToday, isSameMonth, isSameDay, addDays, addMonths } from 'date-fns';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
 
+const BIRTHDAYS_STORAGE_KEY = 'birthdays';
+
 export interface DateOfBirth {
+	id: number;
 	name: string;
 	day: number;
 	month: number;
@@ -9,6 +14,7 @@ export interface DateOfBirth {
 }
 
 export interface BirthdayAnniversary {
+	id: number;
 	name: string;
 	date: Date; // this date has the current year (or next year)
 	age?: number;
@@ -19,7 +25,31 @@ export interface BirthdayGroup {
 	birthdays: BirthdayAnniversary[];
 }
 
-export function addBirthday(dateOfBirth: DateOfBirth): void {}
+async function getAllDatesOfBirth(): Promise<DateOfBirth[]> {
+	const rawData = await AsyncStorage.getItem(BIRTHDAYS_STORAGE_KEY);
+	if (rawData === null) {
+		return [];
+	}
+	return JSON.parse(rawData);
+}
+
+export async function addBirthday(
+	name: string,
+	day: number,
+	month: number,
+	year?: number
+): Promise<void> {
+	const birthdays = await getAllDatesOfBirth();
+	const dateOfBirth = {
+		id: birthdays.length,
+		name,
+		day,
+		month,
+		year,
+	};
+	birthdays.push(dateOfBirth);
+	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+}
 
 export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnniversary {
 	const today = startOfToday();
@@ -30,6 +60,7 @@ export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnnive
 		anniversaryDate.setFullYear(thisYear + 1);
 	}
 	const birthdayAnniversary: BirthdayAnniversary = {
+		id: dateOfBirth.id,
 		name: dateOfBirth.name,
 		date: anniversaryDate,
 	};
@@ -39,27 +70,23 @@ export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnnive
 	return birthdayAnniversary;
 }
 
-function getAllFutureBirthdays(): BirthdayAnniversary[] {
-	const datesOfBirth: DateOfBirth[] = [
-		{ name: 'Konstantyn', day: 31, month: 8, year: 1999 },
-		{ name: 'Jerzy', day: 31, month: 8, year: 1998 },
-		{ name: 'Conor', day: 5, month: 9, year: 2000 },
-		{ name: 'Polska', day: 11, month: 11 },
-	];
+async function getAllFutureBirthdays(): Promise<BirthdayAnniversary[]> {
+	const datesOfBirth = await getAllDatesOfBirth();
 	const result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
 	return result;
 }
 
-export function getTodaysBirthdays(): BirthdayAnniversary[] {
-	return getAllFutureBirthdays().filter((bday) => isToday(bday.date));
+export async function getTodaysBirthdays(): Promise<BirthdayAnniversary[]> {
+	const allBirthdays = await getAllFutureBirthdays();
+	return allBirthdays.filter((bday) => isToday(bday.date));
 }
 
 /**
  * Get all birthdays within a week from after today
  */
-export function getUpcomingBirthdays(): BirthdayGroup[] {
+export async function getUpcomingBirthdays(): Promise<BirthdayGroup[]> {
 	const result: BirthdayGroup[] = [];
-	const allBirthdays = getAllFutureBirthdays();
+	const allBirthdays = await getAllFutureBirthdays();
 
 	const today = startOfToday();
 	for (let dayDelta = 1; dayDelta <= 7; dayDelta++) {
@@ -73,9 +100,9 @@ export function getUpcomingBirthdays(): BirthdayGroup[] {
 	return result;
 }
 
-export function getBirthdaysPerMonth(): BirthdayGroup[] {
+export async function getBirthdaysPerMonth(): Promise<BirthdayGroup[]> {
 	const result: BirthdayGroup[] = [];
-	const allBirthdays = getAllFutureBirthdays();
+	const allBirthdays = await getAllFutureBirthdays();
 
 	const today = startOfToday();
 	// iterate over 13 months: from this month, to the same month next year
