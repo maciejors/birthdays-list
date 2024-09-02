@@ -65,7 +65,7 @@ export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnnive
 		date: anniversaryDate,
 	};
 	if (dateOfBirth.year !== undefined) {
-		birthdayAnniversary.age = today.getFullYear() - dateOfBirth.year;
+		birthdayAnniversary.age = anniversaryDate.getFullYear() - dateOfBirth.year;
 	}
 	return birthdayAnniversary;
 }
