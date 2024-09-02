@@ -34,13 +34,26 @@ export default function Index() {
 		}, [])
 	);
 
+	function getInfoText(): string {
+		if (todaysBirthdays!.length > 0) {
+			// No info anyway when birthdays today
+			return '';
+		}
+		if (upcomingBirthdays!.length > 0) {
+			// no birthdays today but some upcoming
+			return 'No birthdays today';
+		}
+		// no birthdays today nor upcoming
+		return 'No birthdays today or in the near future';
+	}
+
 	return (
 		todaysBirthdays !== undefined &&
 		upcomingBirthdays !== undefined && (
 			<View>
 				{todaysBirthdays.length === 0 ? (
 					<View>
-						<CentredInfo info="No birthdays today" important />
+						<CentredInfo info={getInfoText()} important />
 					</View>
 				) : (
 					<FlatList

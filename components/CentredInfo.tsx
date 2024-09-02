@@ -1,5 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import PaddedText from './PaddedText';
+import { useTheme } from 'react-native-paper';
 
 type CentredInfoProps = {
 	info: string;
@@ -7,6 +8,8 @@ type CentredInfoProps = {
 };
 
 export default function CentredInfo({ info, important = false }: CentredInfoProps) {
+	const theme = useTheme();
+
 	const styles = StyleSheet.create({
 		container: {
 			alignItems: 'center',
@@ -14,8 +17,9 @@ export default function CentredInfo({ info, important = false }: CentredInfoProp
 		},
 		text: {
 			fontSize: 16,
-			color: 'grey',
+			color: theme.colors.primary,
 			fontWeight: important ? 'bold' : 'normal',
+			textAlign: 'center',
 		},
 	});
 
