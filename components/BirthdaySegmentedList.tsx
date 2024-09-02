@@ -1,7 +1,7 @@
 import { SectionList, StyleSheet } from 'react-native';
 
 import BirthdayCard from './BirthdayCard';
-import { BirthdayGroup } from '@/core/birthdays';
+import { BirthdayGroup, deleteBirthday } from '@/core/birthdays';
 import Spacer from './Spacer';
 import PaddedText from './PaddedText';
 import CentredInfo from './CentredInfo';
@@ -16,9 +16,13 @@ const styles = StyleSheet.create({
 
 type BirthdaySegmentedListProps = {
 	birthdaysGrouped: BirthdayGroup[];
+	onDelete?: (id: number) => any;
 };
 
-export default function BirthdaySegmentedList({ birthdaysGrouped }: BirthdaySegmentedListProps) {
+export default function BirthdaySegmentedList({
+	birthdaysGrouped,
+	onDelete = undefined,
+}: BirthdaySegmentedListProps) {
 	const sectionListData = birthdaysGrouped.map(({ groupName, birthdays }) => ({
 		title: groupName,
 		data: birthdays,
@@ -27,7 +31,7 @@ export default function BirthdaySegmentedList({ birthdaysGrouped }: BirthdaySegm
 	return (
 		<SectionList
 			sections={sectionListData}
-			renderItem={({ item }) => <BirthdayCard birthday={item} />}
+			renderItem={({ item }) => <BirthdayCard birthday={item} onDelete={onDelete} />}
 			renderSectionHeader={({ section }) => (
 				<PaddedText style={styles.sectionHeader}>{section.title}</PaddedText>
 			)}

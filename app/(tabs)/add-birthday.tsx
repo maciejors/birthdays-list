@@ -2,11 +2,9 @@ import { View, StyleSheet, Button } from 'react-native';
 import { useState } from 'react';
 import { Snackbar } from 'react-native-paper';
 
-import PaddedText from '@/components/PaddedText';
 import StyledTextInput from '@/components/StyledTextInput';
 import MonthPicker from '@/components/MonthPicker';
-import BirthdayCard from '@/components/BirthdayCard';
-import { addBirthday, DateOfBirth, getBirthdayAnniversary } from '@/core/birthdays';
+import { addBirthday, DateOfBirth } from '@/core/birthdays';
 import Colors from '@/values/Colors';
 
 const styles = StyleSheet.create({
@@ -109,9 +107,9 @@ export default function AddBirthday() {
 					keyboardType="numeric"
 				/>
 			</View>
-			<PaddedText style={styles.previewTitle}>Previews:</PaddedText>
+			{/* <PaddedText style={styles.previewTitle}>Previews:</PaddedText>
 			<BirthdayCard birthday={getBirthdayAnniversary(getDateOfBirth())} />
-			<BirthdayCard birthday={getBirthdayAnniversary(getDateOfBirth())} todayHighlight />
+			<BirthdayCard birthday={getBirthdayAnniversary(getDateOfBirth())} todayHighlight /> */}
 			<View style={styles.addButtonContainer}>
 				<Button
 					onPress={handleAddBirthday}

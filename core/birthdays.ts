@@ -51,7 +51,13 @@ export async function addBirthday(
 	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
 }
 
-export function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnniversary {
+export async function deleteBirthday(id: number): Promise<void> {
+	let birthdays = await getAllDatesOfBirth();
+	birthdays = birthdays.filter((b) => b.id !== id);
+	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+}
+
+function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnniversary {
 	const today = startOfToday();
 	const thisYear = today.getFullYear();
 	const anniversaryDate = new Date(thisYear, dateOfBirth.month - 1, dateOfBirth.day);
