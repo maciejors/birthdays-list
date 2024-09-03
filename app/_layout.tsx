@@ -1,4 +1,4 @@
-import { StatusBar, useColorScheme } from 'react-native';
+import { StatusBar, useColorScheme, SafeAreaView } from 'react-native';
 import { ThemeProvider, DefaultTheme } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import {
@@ -24,10 +24,12 @@ export default function RootLayout() {
 	return (
 		<PaperProvider theme={theme}>
 			<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : LightTheme}>
-				<StatusBar backgroundColor="transparent" translucent />
-				<Stack>
-					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				</Stack>
+				<SafeAreaView style={{ flex: 1 }}>
+					<StatusBar backgroundColor="transparent" translucent />
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					</Stack>
+				</SafeAreaView>
 			</ThemeProvider>
 		</PaperProvider>
 	);
