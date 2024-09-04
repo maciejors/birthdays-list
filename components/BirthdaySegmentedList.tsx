@@ -35,7 +35,7 @@ export default function BirthdaySegmentedList({
 			renderSectionHeader={({ section }) => (
 				<PaddedText style={styles.sectionHeader}>{section.title}</PaddedText>
 			)}
-			keyExtractor={(item, index) => index.toString()}
+			keyExtractor={(item, index) => item.id.toString()}
 			stickySectionHeadersEnabled
 			ListFooterComponent={<Spacer />}
 			ListEmptyComponent={<CentredInfo info="No birthdays available" />}
