@@ -1,51 +1,51 @@
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { useState } from 'react';
-import { Snackbar, Button } from 'react-native-paper';
+import { DatePickerInput } from 'react-native-paper-dates';
+import { Snackbar, Button, Switch, TouchableRipple, TextInput } from 'react-native-paper';
 
-import StyledTextInput from '@/components/StyledTextInput';
-import MonthPicker from '@/components/MonthPicker';
-import { addBirthday, DateOfBirth } from '@/core/birthdays';
+import { addBirthday } from '@/core/birthdays';
+import PaddedText from '@/components/PaddedText';
 
 const styles = StyleSheet.create({
 	rootContainer: {
 		flex: 1, // this allows the SnackBar to show up at the bottom of the screen
 	},
-	previewTitle: {
-		fontSize: 18,
-		fontStyle: 'italic',
-		marginTop: 16,
+	textInput: {
+		backgroundColor: 'transparent',
+	},
+	datePickerInputContainer: {
+		paddingVertical: 28,
+	},
+	touchableSwitchContainer: {
+		// marginVertical: 8,
+		paddingVertical: 8,
+		paddingHorizontal: 12,
+	},
+	switchLayout: {
+		flexDirection: 'row',
+		// justifyContent: 'space-between',
+		alignItems: 'center',
+		gap: 4,
+	},
+	switchText: {
+		fontSize: 16,
 	},
 	addButtonContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		padding: 8,
-		paddingTop: 16,
 	},
 });
 
 export default function AddBirthday() {
 	const [name, setName] = useState('');
-	const [dayOfBirth, setDayOfBirth] = useState('');
-	const [monthOfBirth, setMonthOfBirth] = useState<string | null>(null);
-	const [yearOfBirth, setYearOfBirth] = useState('');
+	const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>();
+	const [ignoreYear, setIgnoreYear] = useState(false);
 
 	const [snackbarText, setSnackbarText] = useState('');
 
-	function parseIntDefault(intStr: string | undefined, defaultValue: number): number {
-		return parseInt(intStr ? intStr : defaultValue.toString());
-	}
-
-	function getDateOfBirth(): DateOfBirth {
-		const result: DateOfBirth = {
-			id: -1, // dummy ID
-			name: name.length > 0 ? name : 'Name',
-			day: parseIntDefault(dayOfBirth, 1),
-			month: parseIntDefault(monthOfBirth ?? '', 1),
-		};
-		if (yearOfBirth.length > 0) {
-			result.year = parseIntDefault(yearOfBirth, 1970);
-		}
-		return result;
+	function switchIgnoreYear() {
+		setIgnoreYear(!ignoreYear);
 	}
 
 	async function handleAddBirthday(): Promise<void> {
@@ -53,22 +53,17 @@ export default function AddBirthday() {
 		if (name.length === 0) {
 			missingFields.push('Name');
 		}
-		if (dayOfBirth.length === 0) {
-			missingFields.push('Day');
-		}
-		if (monthOfBirth === null) {
-			missingFields.push('Month');
+		if (dateOfBirth === undefined) {
+			missingFields.push('Date of birth');
 		}
 		if (missingFields.length === 0) {
 			Keyboard.dismiss();
-			const dateOfBirth = getDateOfBirth();
-			await addBirthday(dateOfBirth.name, dateOfBirth.day, dateOfBirth.month, dateOfBirth.year);
+			await addBirthday(name, dateOfBirth!, ignoreYear);
 			setSnackbarText('Birthday added successfully!');
 			// reset state
 			setName('');
-			setDayOfBirth('');
-			setYearOfBirth('');
-			setMonthOfBirth(null);
+			setDateOfBirth(undefined);
+			setIgnoreYear(false);
 		} else {
 			setSnackbarText(`Missing the following required fields: ${missingFields.join(', ')}`);
 		}
@@ -76,20 +71,24 @@ export default function AddBirthday() {
 
 	return (
 		<View style={styles.rootContainer}>
-			<StyledTextInput value={name} onChangeText={setName} placeholder="Name" />
-			<StyledTextInput
-				value={dayOfBirth}
-				onChangeText={setDayOfBirth}
-				placeholder="Day"
-				keyboardType="numeric"
-			/>
-			<MonthPicker onChangeMonth={setMonthOfBirth} selectedMonth={monthOfBirth} />
-			<StyledTextInput
-				value={yearOfBirth}
-				onChangeText={setYearOfBirth}
-				placeholder="Year"
-				keyboardType="numeric"
-			/>
+			<TextInput style={styles.textInput} value={name} onChangeText={setName} label="Name" />
+			<View style={styles.datePickerInputContainer}>
+				<DatePickerInput
+					style={styles.textInput}
+					locale="en-GB"
+					startWeekOnMonday
+					label="Birthdate"
+					value={dateOfBirth}
+					onChange={(d) => setDateOfBirth(d)}
+					inputMode="start"
+				/>
+			</View>
+			<TouchableRipple style={styles.touchableSwitchContainer} onPress={switchIgnoreYear}>
+				<View style={styles.switchLayout}>
+					<PaddedText style={styles.switchText}>Unknown year</PaddedText>
+					<Switch value={ignoreYear} onValueChange={switchIgnoreYear} />
+				</View>
+			</TouchableRipple>
 			<View style={styles.addButtonContainer}>
 				<Button
 					mode="contained"

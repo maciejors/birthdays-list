@@ -5,12 +5,11 @@ import { formatMonthYear, formatRelativeDate } from './dateUtils';
 
 const BIRTHDAYS_STORAGE_KEY = 'birthdays';
 
-export interface DateOfBirth {
+interface StoredBirthday {
 	id: number;
 	name: string;
-	day: number;
-	month: number;
-	year?: number;
+	timestamp: number;
+	ignoreYear: boolean;
 }
 
 export interface BirthdayAnniversary {
@@ -25,7 +24,10 @@ export interface BirthdayGroup {
 	birthdays: BirthdayAnniversary[];
 }
 
-async function getAllDatesOfBirth(): Promise<DateOfBirth[]> {
+/**
+ * Reads all stored birthdays
+ */
+async function readBirthdays(): Promise<StoredBirthday[]> {
 	const rawData = await AsyncStorage.getItem(BIRTHDAYS_STORAGE_KEY);
 	if (rawData === null) {
 		return [];
@@ -33,51 +35,60 @@ async function getAllDatesOfBirth(): Promise<DateOfBirth[]> {
 	return JSON.parse(rawData);
 }
 
+/**
+ * Overwrites currently stored birthdays with the specified ones
+ */
+async function storeBirthdays(birthdays: StoredBirthday[]): Promise<void> {
+	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+}
+
 export async function addBirthday(
 	name: string,
-	day: number,
-	month: number,
-	year?: number
+	dateOfBirth: Date,
+	ignoreYear: boolean
 ): Promise<void> {
-	const birthdays = await getAllDatesOfBirth();
-	const dateOfBirth = {
+	const birthdays = await readBirthdays();
+	const newBirthday: StoredBirthday = {
 		id: birthdays.length,
 		name,
-		day,
-		month,
-		year,
+		timestamp: dateOfBirth.getTime(),
+		ignoreYear,
 	};
-	birthdays.push(dateOfBirth);
-	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+	birthdays.push(newBirthday);
+	await storeBirthdays(birthdays);
 }
 
 export async function deleteBirthday(id: number): Promise<void> {
-	let birthdays = await getAllDatesOfBirth();
+	let birthdays = await readBirthdays();
 	birthdays = birthdays.filter((b) => b.id !== id);
-	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+	await storeBirthdays(birthdays);
 }
 
-function getBirthdayAnniversary(dateOfBirth: DateOfBirth): BirthdayAnniversary {
+/**
+ * Converts StoredBirthday into BirthdayAnniversary
+ */
+function getBirthdayAnniversary(storedBirthday: StoredBirthday): BirthdayAnniversary {
 	const today = startOfToday();
 	const thisYear = today.getFullYear();
-	const anniversaryDate = new Date(thisYear, dateOfBirth.month - 1, dateOfBirth.day);
-	// birthday is past so now it counts as upcomin in a year
+	const dateOfBirth = new Date(storedBirthday.timestamp);
+	const anniversaryDate = new Date(thisYear, dateOfBirth.getMonth(), dateOfBirth.getDate());
+	// birthday is past so now it counts as upcoming in a year
 	if (anniversaryDate < today) {
 		anniversaryDate.setFullYear(thisYear + 1);
 	}
 	const birthdayAnniversary: BirthdayAnniversary = {
-		id: dateOfBirth.id,
-		name: dateOfBirth.name,
+		id: storedBirthday.id,
+		name: storedBirthday.name,
 		date: anniversaryDate,
 	};
-	if (dateOfBirth.year !== undefined) {
-		birthdayAnniversary.age = anniversaryDate.getFullYear() - dateOfBirth.year;
+	if (!storedBirthday.ignoreYear) {
+		birthdayAnniversary.age = anniversaryDate.getFullYear() - dateOfBirth.getFullYear();
 	}
 	return birthdayAnniversary;
 }
 
 async function getAllFutureBirthdays(): Promise<BirthdayAnniversary[]> {
-	const datesOfBirth = await getAllDatesOfBirth();
+	const datesOfBirth = await readBirthdays();
 	const result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
 	return result;
 }

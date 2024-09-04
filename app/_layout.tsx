@@ -6,9 +6,12 @@ import {
 	DefaultTheme as PaperDefaultTheme,
 	adaptNavigationTheme,
 } from 'react-native-paper';
+import { enGB, registerTranslation as registerDatesTranslation } from 'react-native-paper-dates';
 import 'react-native-reanimated';
 
 import { DarkThemeColors, LightThemeColors } from '@/values/Colors';
+
+registerDatesTranslation('en-GB', enGB);
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();
