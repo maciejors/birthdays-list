@@ -58,7 +58,7 @@ export default function AddBirthday() {
 		}
 		if (missingFields.length === 0) {
 			Keyboard.dismiss();
-			await addBirthday(name, dateOfBirth!, ignoreYear);
+			await addBirthday(name.trim(), dateOfBirth!, ignoreYear);
 			setSnackbarText('Birthday added successfully!');
 			// reset state
 			setName('');
