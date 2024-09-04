@@ -1,45 +1,43 @@
 {
-  "expo": {
-    "name": "Birthdays List",
-    "slug": "birthdays-list",
-    "version": "0.1.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon256.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon256.png",
-        "backgroundColor": "#E6E6FA"
-      },
-      "package": "com.maciejors.birthdayslist"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/icon256.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "9cddb1e4-3a88-4a9f-8767-1770031cf32c"
-      }
-    }
-  }
+	"expo": {
+		"name": "Birthdays List",
+		"slug": "birthdays-list",
+		"version": "0.1.0",
+		"orientation": "portrait",
+		"icon": "./assets/images/icon512.png",
+		"scheme": "myapp",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#E6E6FA"
+		},
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#E6E6FA"
+			},
+			"package": "com.maciejors.birthdayslist"
+		},
+		"web": {
+			"bundler": "metro",
+			"output": "static",
+			"favicon": "./assets/images/icon256.png"
+		},
+		"plugins": ["expo-router"],
+		"experiments": {
+			"typedRoutes": true
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "9cddb1e4-3a88-4a9f-8767-1770031cf32c"
+			}
+		}
+	}
 }
