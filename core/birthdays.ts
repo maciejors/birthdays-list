@@ -1,4 +1,12 @@
-import { startOfToday, isToday, isSameMonth, isSameDay, addDays, addMonths } from 'date-fns';
+import {
+	startOfToday,
+	isToday,
+	isSameMonth,
+	isSameDay,
+	addDays,
+	addMonths,
+	compareAsc,
+} from 'date-fns';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
@@ -89,7 +97,9 @@ function getBirthdayAnniversary(storedBirthday: StoredBirthday): BirthdayAnniver
 
 async function getAllFutureBirthdays(): Promise<BirthdayAnniversary[]> {
 	const datesOfBirth = await readBirthdays();
-	const result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
+	let result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
+	// sort by date - most recent first
+	result = result.sort((b1, b2) => compareAsc(b1.date, b2.date));
 	return result;
 }
 
