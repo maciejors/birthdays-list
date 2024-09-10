@@ -1,11 +1,11 @@
 import { SectionList, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 import BirthdayCard from './BirthdayCard';
-import { BirthdayGroup } from '@/core/birthdays';
+import type { BirthdayGroup } from '@/core/types';
 import Spacer from './Spacer';
 import PaddedText from './PaddedText';
 import CentredInfo from './CentredInfo';
-import { useTheme } from '@react-navigation/native';
 
 type BirthdaySegmentedListProps = {
 	birthdaysGrouped: BirthdayGroup[];

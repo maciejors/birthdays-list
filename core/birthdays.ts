@@ -10,27 +10,9 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
+import type { StoredBirthday, BirthdayAnniversary, BirthdayGroup } from './types';
 
 const BIRTHDAYS_STORAGE_KEY = 'birthdays';
-
-interface StoredBirthday {
-	id: number;
-	name: string;
-	timestamp: number;
-	ignoreYear: boolean;
-}
-
-export interface BirthdayAnniversary {
-	id: number;
-	name: string;
-	date: Date; // this date has the current year (or next year)
-	age?: number;
-}
-
-export interface BirthdayGroup {
-	groupName: string; // refers to some date, e.g. "Tomorrow", or "January 2025"
-	birthdays: BirthdayAnniversary[];
-}
 
 /**
  * Reads all stored birthdays

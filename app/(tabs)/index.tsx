@@ -2,12 +2,8 @@ import { View, FlatList, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useState, useCallback } from 'react';
 
-import {
-	BirthdayAnniversary,
-	BirthdayGroup,
-	getTodaysBirthdays,
-	getUpcomingBirthdays,
-} from '@/core/birthdays';
+import { getTodaysBirthdays, getUpcomingBirthdays } from '@/core/birthdays';
+import type { BirthdayAnniversary, BirthdayGroup } from '@/core/types';
 import BirthdaySegmentedList from '@/components/BirthdaySegmentedList';
 import BirthdayCard from '@/components/BirthdayCard';
 import Spacer from '@/components/Spacer';

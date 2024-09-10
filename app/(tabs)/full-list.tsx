@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { BirthdayGroup, deleteBirthday, getBirthdaysPerMonth } from '@/core/birthdays';
+import { deleteBirthday, getBirthdaysPerMonth } from '@/core/birthdays';
+import type { BirthdayGroup } from '@/core/types';
 import BirthdaySegmentedList from '@/components/BirthdaySegmentedList';
 
 export default function FullList() {

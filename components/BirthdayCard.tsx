@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Dialog, Portal, Button, useTheme, Text, Card } from 'react-native-paper';
 
-import type { BirthdayAnniversary } from '@/core/birthdays';
+import type { BirthdayAnniversary } from '@/core/types';
 import { formatDateMonth } from '@/core/dateUtils';
 
 type BirthdayCardProps = {
