@@ -17,3 +17,9 @@ export interface BirthdayGroup {
 	groupName: string; // refers to some date, e.g. "Tomorrow", or "January 2025"
 	birthdays: BirthdayAnniversary[];
 }
+
+export interface BirthdayNotification {
+	birthdayId: number;
+	notificationId: string;
+	scheduledYear: number;
+}

@@ -11,6 +11,7 @@ import {
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
 import type { StoredBirthday, BirthdayAnniversary, BirthdayGroup } from './types';
 import { readObject, storeObject } from './storage';
+import { cancelNotification, handleScheduleNotifications } from './notifications';
 
 const BIRTHDAYS_STORAGE_KEY = 'birthdays';
 
@@ -51,6 +52,7 @@ export async function deleteBirthday(id: number): Promise<void> {
 	let birthdays = await readBirthdays();
 	birthdays = birthdays.filter((b) => b.id !== id);
 	await storeBirthdays(birthdays);
+	await cancelNotification(id);
 }
 
 /**
@@ -78,10 +80,12 @@ function getBirthdayAnniversary(storedBirthday: StoredBirthday): BirthdayAnniver
 
 async function getAllFutureBirthdays(): Promise<BirthdayAnniversary[]> {
 	const datesOfBirth = await readBirthdays();
-	let result: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
+	let birthdays: BirthdayAnniversary[] = datesOfBirth.map(getBirthdayAnniversary);
 	// sort by date - most recent first
-	result = result.sort((b1, b2) => compareAsc(b1.date, b2.date));
-	return result;
+	birthdays = birthdays.sort((b1, b2) => compareAsc(b1.date, b2.date));
+	// schedule upcoming birthdays
+	await handleScheduleNotifications(birthdays);
+	return birthdays;
 }
 
 export async function getTodaysBirthdays(): Promise<BirthdayAnniversary[]> {

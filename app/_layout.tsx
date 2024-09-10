@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { StatusBar, useColorScheme, SafeAreaView } from 'react-native';
 import { ThemeProvider, DefaultTheme } from '@react-navigation/native';
 import { Stack } from 'expo-router';
@@ -10,10 +11,15 @@ import { enGB, registerTranslation as registerDatesTranslation } from 'react-nat
 import 'react-native-reanimated';
 
 import { DarkThemeColors, LightThemeColors } from '@/values/Colors';
+import { registerForPushNotificationsAsync } from '@/core/notifications';
 
 registerDatesTranslation('en-GB', enGB);
 
 export default function RootLayout() {
+	useEffect(() => {
+		registerForPushNotificationsAsync();
+	});
+
 	const colorScheme = useColorScheme();
 	const theme = {
 		...PaperDefaultTheme,
