@@ -7,10 +7,10 @@ import {
 	addMonths,
 	compareAsc,
 } from 'date-fns';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { formatMonthYear, formatRelativeDate } from './dateUtils';
 import type { StoredBirthday, BirthdayAnniversary, BirthdayGroup } from './types';
+import { readObject, storeObject } from './storage';
 
 const BIRTHDAYS_STORAGE_KEY = 'birthdays';
 
@@ -18,18 +18,14 @@ const BIRTHDAYS_STORAGE_KEY = 'birthdays';
  * Reads all stored birthdays
  */
 async function readBirthdays(): Promise<StoredBirthday[]> {
-	const rawData = await AsyncStorage.getItem(BIRTHDAYS_STORAGE_KEY);
-	if (rawData === null) {
-		return [];
-	}
-	return JSON.parse(rawData);
+	return await readObject<StoredBirthday[]>(BIRTHDAYS_STORAGE_KEY, []);
 }
 
 /**
  * Overwrites currently stored birthdays with the specified ones
  */
 async function storeBirthdays(birthdays: StoredBirthday[]): Promise<void> {
-	await AsyncStorage.setItem(BIRTHDAYS_STORAGE_KEY, JSON.stringify(birthdays));
+	await storeObject(BIRTHDAYS_STORAGE_KEY, birthdays);
 }
 
 export async function addBirthday(
