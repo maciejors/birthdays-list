@@ -56,8 +56,11 @@ export async function addBirthday(
 	ignoreYear: boolean
 ): Promise<void> {
 	const birthdays = await readBirthdays();
+	const birthdayWithMaxId = birthdays.reduce((currMax, bday) =>
+		bday.id > currMax.id ? bday : currMax
+	);
 	const newBirthday: StoredBirthday = {
-		id: birthdays.length,
+		id: birthdayWithMaxId.id + 1,
 		name,
 		timestamp: dateOfBirth.getTime(),
 		ignoreYear,
