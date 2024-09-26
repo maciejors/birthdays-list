@@ -47,13 +47,6 @@ export async function handleScheduleNotifications(birthdays: BirthdayAnniversary
 		actualScheduledNotificationsIds.includes(notifData.notificationId)
 	);
 
-	for (let no of await Notifications.getAllScheduledNotificationsAsync()) {
-		console.log(no.content.body);
-	}
-	console.log(scheduledNotificationsData);
-	console.log(birthdays);
-	console.log();
-
 	// convert to map for faster access
 	const scheduledBirthdaysMap = new Map<number, BirthdayNotification>();
 	for (const notification of scheduledNotificationsData) {
